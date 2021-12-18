@@ -17,6 +17,6 @@ void display_timer(int a, int b, int c, int d, int t){
           .
           .
 
-
+//end of the function
 }
 
