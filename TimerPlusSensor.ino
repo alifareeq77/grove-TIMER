@@ -36,7 +36,8 @@ void run_sensor() {
   duration = pulseIn(ECH, HIGH);
   //-------------------------------
   // Calculating the distance
-  distance = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
+  //distance = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
+  distance= 190;
   //-------------------------------
   // Displays the distance and the state of timer on the Serial Monitor [for debugging purpos]
 
@@ -58,7 +59,7 @@ void run_sensor() {
   }
 }
 
-void timer_func(int h1, int h2, int m2, int m1, int toogle) {
+void timer_func(int h11, int h22, int m22, int m11, int toogle) {
   // first digit
   if (h2 > 9) {
     h1++;
@@ -106,6 +107,7 @@ void loop() {
     timer_func(h1, h2, m2, m1, toogle);
     delay(1000);
     display_timer(h1, h2, m2, m1, toogle);
+    Serial.println(m1);
   }
   run_sensor();
 
