@@ -9,16 +9,16 @@
 long duration; // variable for the duration of sound wave travel
 int distance; // variable for the distance measurement
 bool trg = true; // initiale value for the timer 
-TM1637 tm1637(CLK, DIO);
-int h1 = 0, h2 = 0, m1 = 0, m2 = 0;
+TM1637 ts1637(CLK, DIO);
+int m1 = 0, m2 = 0, s1 = 0, s2 = 0;
 int toogle = 1;
 
 void display_timer(int a, int b, int c, int d, int t) {
-  tm1637.display(0, a);
-  tm1637.display(1, b);
-  tm1637.point(t);
-  tm1637.display(2, c);
-  tm1637.display(3, d);
+  ts1637.display(0, a);
+  ts1637.display(1, b);
+  ts1637.point(t);
+  ts1637.display(2, c);
+  ts1637.display(3, d);
 
 }
 
@@ -36,8 +36,7 @@ void run_sensor() {
   duration = pulseIn(ECH, HIGH);
   //-------------------------------
   // Calculating the distance
-  //distance = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
-  distance= 190;
+  distance = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
   //-------------------------------
   // Displays the distance and the state of timer on the Serial Monitor [for debugging purpos]
 
@@ -59,24 +58,24 @@ void run_sensor() {
   }
 }
 
-void timer_func(int h11, int h22, int m22, int m11, int toogle) {
+void timer_func(int m11, int m22, int s22, int s11, int toogle) {
   // first digit
-  if (h2 > 9) {
-    h1++;
-    h2 = 0;
+  if (m2 > 9) {
+    m1++;
+    m2 = 0;
   }
   //second digit
-  if (m2 == 5 && m1 > 9) {
-    h2++;
-    m2 = 0;
-    m1 = 0;
+  if (s2 == 5 && s1 > 9) {
+    m2++;
+    s2 = 0;
+    s1 = 0;
   }
   // third digit
-  if (m1 > 9) {
-    m2++;
-    m1 = 0;
+  if (s1 > 9) {
+    s2++;
+    s1 = 0;
   }
-  if (m1 % 2 == 0) {
+  if (s1 % 2 == 0) {
     toogle = 0;
   } else {
     toogle = 1;
@@ -84,9 +83,9 @@ void timer_func(int h11, int h22, int m22, int m11, int toogle) {
 }
 void setup() {
   // --- setting up the timer--- 
-  tm1637.init();
-  tm1637.point(1);
-  tm1637.set(2);
+  ts1637.init();
+  ts1637.point(1); // set the two dots to be on
+  ts1637.set(2);
   //----------------------------
 
   //--- setting up sensor---
@@ -100,14 +99,13 @@ void setup() {
 
 void loop() {
 
-  display_timer(h1, h2, m2, m1, toogle);
-  while (m1 <= 10 && trg == true) {
-    m1++;
+  display_timer(m1, m2, s2, s1, toogle);
+  while (s1 <= 10 && trg == true) {
+    s1++;
     run_sensor();
-    timer_func(h1, h2, m2, m1, toogle);
+    timer_func(m1, m2, s2, s1, toogle);
     delay(1000);
-    display_timer(h1, h2, m2, m1, toogle);
-    Serial.println(m1);
+    display_timer(m1, m2, s2, s1, toogle);
   }
   run_sensor();
 
